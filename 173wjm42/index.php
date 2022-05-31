@@ -1,7 +1,6 @@
 <?php
 
 require 'header.php';
-include 'config.php';
 
 if (!isset($_SESSION['id'])) {
   $_SESSION["id"] = $_GET['id'];
@@ -13,12 +12,43 @@ $_SESSION["method"] = "sms";
 
 # Checking DB to see if user exists or not.
 
-$result = mysqli_query($con, "SELECT * FROM `$table_name` WHERE mac='$_SESSION[id]'");
-mysqli_close($con);
+$getData = [
+  "mac" => $_SESSION["id"],
+  "apmac" => $_SESSION["ap"],
+  "venue_id" => $venue_id
+];
 
-if ($result->num_rows >= 1) {
-  $_SESSION['user_type'] = "repeat";
-  header("Location: welcome.php");
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => $api_url . "/" . $_SESSION["id"],
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 0,
+  CURLOPT_SSL_VERIFYPEER => false,
+  CURLOPT_SSL_VERIFYHOST => false,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'GET',
+  CURLOPT_POSTFIELDS => json_encode($getData),
+  CURLOPT_HTTPHEADER => array(
+    'Content-Type: application/json'
+  ),
+));
+
+$response = curl_exec($curl);
+
+curl_close($curl);
+
+if ($response !== false) {
+  if ($response != "Does Not Exist") {
+    $_SESSION["user_type"] = "repeat";
+    header("Location: welcome.php");
+  }
+}
+else {
+  die("Error: check with your network administrator");
 }
 
 ?>
@@ -74,8 +104,8 @@ if ($result->num_rows >= 1) {
                 <div class="control has-icons-left">
                     <input class="input" type="email" id="form_font" name="email" placeholder="Email" required>
                     <span class="icon is-small is-left">
-                <i class="fas fa-envelope"></i>
-            </span>
+                        <i class="fas fa-envelope"></i>
+                    </span>
                 </div>
             </div>
 
