@@ -1,39 +1,30 @@
 <?php
 
 require 'header.php';
+include 'config.php';
 
 $mac = $_SESSION["id"];
 $apmac = $_SESSION["ap"];
 $user_type = $_SESSION["user_type"];
-
-if ($_SESSION['method'] == 'sms') {
-    $email_verified = 0;
-} else {
-  $email_verified = 1;
-}
+$last_updated = date("Y-m-d H:i:s");
 
 if ($user_type == "new") {
   $fname = $_SESSION['fname'];
   $lname = $_SESSION['lname'];
-  $phone = $_SESSION['phone'];
   $email = $_SESSION['email'];
 
-  $postData = [
-    "mac" => $mac,
-    "apmac" => $apmac,
-    "venue_id" => $venue_id,
-    "fname" => $fname,
-    "lname" => $lname,
-    "email" => $email,
-    "email_verified" => $email_verified,
-    "phone" => $phone,
-  ];
-} else {
-  $postData = [
-    "mac" => $mac,
-    "apmac" => $apmac,
-    "venue_id" => $venue_id
-  ];
+  mysqli_query($con, "
+    CREATE TABLE IF NOT EXISTS `$table_name` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `firstname` varchar(45) NOT NULL,
+    `lastname` varchar(45) NOT NULL,
+    `email` varchar(45) NOT NULL,
+    `mac` varchar(45) NOT NULL,
+    `last_updated` varchar(45) NOT NULL,
+    PRIMARY KEY (`id`)
+    )");
+
+  mysqli_query($con,"INSERT INTO `$table_name` (firstname, lastname, email, mac, last_updated) VALUES ('$fname', '$lname', '$email', '$mac', '$last_updated')");
 }
 
 $controlleruser = $_SERVER['CONTROLLER_USER'];
@@ -49,37 +40,6 @@ $set_debug_mode   = $unifi_connection->set_debug($debug);
 $loginresults     = $unifi_connection->login();
 
 $auth_result = $unifi_connection->authorize_guest($mac, $duration, null, null, null, $apmac);
-
-$curl = curl_init();
-
-curl_setopt_array($curl, array(
-  CURLOPT_URL => $api_url,
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_ENCODING => '',
-  CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 0,
-  CURLOPT_SSL_VERIFYPEER => false,
-  CURLOPT_SSL_VERIFYHOST => false,
-  CURLOPT_FOLLOWLOCATION => true,
-  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-  CURLOPT_CUSTOMREQUEST => 'POST',
-  CURLOPT_POSTFIELDS => json_encode($postData),
-  CURLOPT_HTTPHEADER => array(
-    'Content-Type: application/json'
-  ),
-));
-
-$response = curl_exec($curl);
-
-curl_close($curl);
-
-if ($response !== false) {
-//  $json = json_decode($response);
-//  print_r($json);
-}
-else {
-  die("Error: check with your network administrator");
-}
 
 ?>
 <!DOCTYPE HTML>

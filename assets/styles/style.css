@@ -45,12 +45,6 @@
   margin: 0;
 }
 
-#codeError
-{
-  display: none;
-  margin-bottom: 10px;
-}
-
 /* Media Query for iPads */
 
 @media only screen 
