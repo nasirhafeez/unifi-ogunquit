@@ -35,6 +35,8 @@ $duration = $_SERVER['DURATION'];
 
 $debug = false;
 
+$site_id = $_SERVER['SITE_ID'];
+
 $unifi_connection = new UniFi_API\Client($controlleruser, $controllerpassword, $controllerurl, $site_id, $controllerversion);
 $set_debug_mode   = $unifi_connection->set_debug($debug);
 $loginresults     = $unifi_connection->login();
