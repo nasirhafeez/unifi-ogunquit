@@ -1,27 +1,27 @@
 <?php
-
-require 'header.php';
-include 'config.php';
-
-$_SESSION["id"] = $_GET['id'];
-$_SESSION["ap"] = $_GET['ap'];
-$_SESSION["user_type"] = "new";
-
-# Checking DB to see if user exists or not.
-$result = mysqli_query($con, "SELECT * FROM `$table_name` WHERE mac='$_SESSION[id]'");
-
-if ($result->num_rows >= 1) {
-  $row = mysqli_fetch_array($result);
-
-  mysqli_close($con);
-
-  $_SESSION["user_type"] = "repeat";
-  header("Location: welcome.php");
-} else {
-  mysqli_close($con);
-}
-
-?>
+//
+//require 'header.php';
+//include 'config.php';
+//
+//$_SESSION["id"] = $_GET['id'];
+//$_SESSION["ap"] = $_GET['ap'];
+//$_SESSION["user_type"] = "new";
+//
+//# Checking DB to see if user exists or not.
+//$result = mysqli_query($con, "SELECT * FROM `$table_name` WHERE mac='$_SESSION[id]'");
+//
+//if ($result->num_rows >= 1) {
+//  $row = mysqli_fetch_array($result);
+//
+//  mysqli_close($con);
+//
+//  $_SESSION["user_type"] = "repeat";
+//  header("Location: welcome.php");
+//} else {
+//  mysqli_close($con);
+//}
+//
+//?>
 <!doctype html>
 <html>
 
@@ -51,7 +51,7 @@ if ($result->num_rows >= 1) {
       <section class="section">
         <div class="container">
           <div id="login" class="content is-size-5 has-text-centered has-text-weight-bold">Enter your details</div>
-          <form id="verify_sms" method="post" action="connect.php">
+          <form id="verify_sms" method="post" action="connect.php" onsubmit="disableButton(this)">
             <div class="field">
                 <div class="control has-icons-left">
                     <input class="input" type="text" id="form_font" name="fname" placeholder="First Name" required>
@@ -89,7 +89,7 @@ if ($result->num_rows >= 1) {
             </div>
             <br>
             <div class="buttons is-centered">
-                <button class="button is-link">Connect</button>
+                <button id="submitBtn" class="button is-link">Connect</button>
             </div>
           </form>
         </div>
@@ -97,5 +97,15 @@ if ($result->num_rows >= 1) {
       </section>
     </div>
   </div>
+
+  <script type="text/javascript">
+      const form1 = document.getElementById('verify_sms');
+      const submitBtn = document.getElementById('submitBtn');
+
+      form1.addEventListener('submit', function() {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = "Connecting";
+      })
+  </script>
 </body>
 </html>
