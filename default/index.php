@@ -103,6 +103,7 @@ if ($result->num_rows >= 1) {
       const submitBtn = document.getElementById('submitBtn');
 
       form1.addEventListener('submit', function() {
+          // test
           submitBtn.disabled = true;
           submitBtn.innerHTML = "Connecting";
       })
