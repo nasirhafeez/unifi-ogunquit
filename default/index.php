@@ -51,7 +51,7 @@ if ($result->num_rows >= 1) {
       <section class="section">
         <div class="container">
           <div id="login" class="content is-size-5 has-text-centered has-text-weight-bold">Enter your details</div>
-          <form id="verify_sms" method="post" action="connect.php" onsubmit="disableButton(this)">
+          <form method="post" action="connect.php" onsubmit="disableButton(this)">
             <div class="field">
                 <div class="control has-icons-left">
                     <input class="input" type="text" id="form_font" name="fname" placeholder="First Name" required>
@@ -89,7 +89,7 @@ if ($result->num_rows >= 1) {
             </div>
             <br>
             <div class="buttons is-centered">
-                <button id="submitBtn" class="button is-link">Connect</button>
+                <button class="button is-link">Connect</button>
             </div>
           </form>
         </div>
@@ -97,16 +97,5 @@ if ($result->num_rows >= 1) {
       </section>
     </div>
   </div>
-
-  <script type="text/javascript">
-      const form1 = document.getElementById('verify_sms');
-      const submitBtn = document.getElementById('submitBtn');
-
-      form1.addEventListener('submit', function() {
-          // test
-          submitBtn.disabled = true;
-          submitBtn.innerHTML = "Connecting";
-      })
-  </script>
 </body>
 </html>
